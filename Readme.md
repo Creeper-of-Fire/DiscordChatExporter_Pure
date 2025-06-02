@@ -1,18 +1,16 @@
 # DiscordChatExporter
 
 [![Status](https://img.shields.io/badge/status-maintenance-ffd700.svg)](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
-[![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://tyrrrz.me/ukraine)
 [![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/DiscordChatExporter/main.yml?branch=master)](https://github.com/Tyrrrz/DiscordChatExporter/actions)
 [![Coverage](https://img.shields.io/codecov/c/github/Tyrrrz/DiscordChatExporter/master)](https://codecov.io/gh/Tyrrrz/DiscordChatExporter)
 [![Release](https://img.shields.io/github/release/Tyrrrz/DiscordChatExporter.svg)](https://github.com/Tyrrrz/DiscordChatExporter/releases)
 [![Downloads](https://img.shields.io/github/downloads/Tyrrrz/DiscordChatExporter/total.svg)](https://github.com/Tyrrrz/DiscordChatExporter/releases)
 [![Pulls](https://img.shields.io/docker/pulls/tyrrrz/discordchatexporter)](https://hub.docker.com/r/tyrrrz/discordchatexporter)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
-[![Fuck Russia](https://img.shields.io/badge/fuck-russia-e4181c.svg?labelColor=000000)](https://twitter.com/tyrrrz/status/1495972128977571848)
 
 <table>
     <tr>
-        <td width="99999" align="center">Development of this project is entirely funded by the community. <b><a href="https://tyrrrz.me/donate">Consider donating to support!</a></b></td>
+        <td width="99999" align="center">该项目的开发完全由社区资助。<b><a href="https://tyrrrz.me/donate">请考虑捐赠以支持他们！</a></b></td>
     </tr>
 </table>
 
@@ -20,62 +18,51 @@
     <img src="favicon.png" alt="Icon" />
 </p>
 
-**DiscordChatExporter** is an application that can be used to export message history from any [Discord](https://discord.com) channel to a file.
-It works with direct messages, group messages, and server channels, and supports Discord's dialect of markdown as well as most other rich media features.
+**DiscordChatExporter** 是一个可用于将任何 [Discord](https://discord.com) 频道中的消息历史记录导出到文件的应用程序。
+它适用于私聊信息、群组信息和服务器频道，并支持 Discord 的 Markdown 方言以及大多数其他富媒体功能。
 
-> ❔ If you have questions or issues, **please refer to the [docs](.docs)**.
+> ❔ 如果您有任何疑问或问题，**请参阅 [文档](.docs)**。
 
-> 💬 If you want to chat, **join my [Discord server](https://discord.gg/2SUWKFnHSm)**.
-
-## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
-
-By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
-
-- You **condemn Russia and its military aggression against Ukraine**
-- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
-- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
-- You **reject false narratives perpetuated by Russian state propaganda**
-
-To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
+> 💬 如果您想聊天，**请加入 [Discord 服务器](https://discord.gg/2SUWKFnHSm)**。
 
 ## Download
 
-- **Graphical user interface** (desktop app):
-  - 🟢 **[Stable release](https://github.com/Tyrrrz/DiscordChatExporter/releases/latest)**: look for `DiscordChatExporter.*.zip`
-  - 🟠 [CI build](https://github.com/Tyrrrz/DiscordChatExporter/actions/workflows/main.yml): look for `DiscordChatExporter.*.zip`
-- **Command-line interface** (terminal app):
-  - 🟢 **[Stable release](https://github.com/Tyrrrz/DiscordChatExporter/releases/latest)**: look for `DiscordChatExporter.Cli.*.zip`
-  - 🟠 [CI build](https://github.com/Tyrrrz/DiscordChatExporter/actions/workflows/main.yml): look for `DiscordChatExporter.Cli.*.zip`
+- **图形用户界面** (桌面应用):
+  - 🟢 **[Stable release](https://github.com/Tyrrrz/DiscordChatExporter/releases/latest)**: 查找 `DiscordChatExporter.*.zip`
+  - 🟠 [CI build](https://github.com/Tyrrrz/DiscordChatExporter/actions/workflows/main.yml): 查找 `DiscordChatExporter.*.zip`
+- **命令行界面** (终端应用):
+  - 🟢 **[Stable release](https://github.com/Tyrrrz/DiscordChatExporter/releases/latest)**: 查找 `DiscordChatExporter.Cli.*.zip`
+  - 🟠 [CI build](https://github.com/Tyrrrz/DiscordChatExporter/actions/workflows/main.yml): 查找 `DiscordChatExporter.Cli.*.zip`
   - 🐋 [Docker](https://hub.docker.com/r/tyrrrz/discordchatexporter): `docker pull tyrrrz/discordchatexporter`
   - 📦 [AUR](https://aur.archlinux.org/packages/discord-chat-exporter-cli): `discord-chat-exporter-cli`
   - 📦 [Nix](https://search.nixos.org/packages?query=discordchatexporter-cli): `discordchatexporter-cli`
 
-> **Important**:
-> To launch the GUI version of the app on MacOS, you need to first remove the downloaded file from quarantine.
-> You can do that by running the following command in the terminal: `xattr -rd com.apple.quarantine DiscordChatExporter.app`.
+> **重要提示**:
+> 要在 MacOS 上启动 GUI 版本的应用程序，您需要首先将下载的文件从隔离区移除。
+> 您可以通过在终端中运行以下命令来执行此操作：`xattr -rd com.apple.quarantine DiscordChatExporter.app`.
 
-> **Note**:
-> If you're unsure which build is right for your system, consult with [this page](https://useragent.cc) to determine your OS and CPU architecture.
+> **注意**:
+> 如果您不确定哪个构建版本适合您的系统，请查阅 [此页面](https://useragent.cc) 以确定您的操作系统和 CPU 架构。
 
-> **Note**:
-> AUR and Nix packages linked above are maintained by the community.
-> If you have any issues with them, please contact the corresponding maintainers.
+> **注意**:
+> 上面链接的 AUR 和 Nix 软件包由社区维护。
+> 如果您对它们有任何疑问，请联系相应的维护者。
 
-## Features
+## 功能特性
 
-- Cross-platform graphical and command-line interfaces
-- Authentication via either a user or a bot token
-- Multiple output formats: HTML (dark/light), TXT, CSV, JSON
-- Support for markdown, attachments, embeds, emoji, and other rich media features
-- File partitioning, date ranges, message filtering, and other export options
-- Self-contained exports that can be viewed offline
+- 跨平台的图形用户界面和命令行界面
+- 通过用户或机器人令牌进行身份验证
+- 多种输出格式：HTML (深色/浅色模式)、TXT、CSV、JSON
+- 支持 Markdown、附件、嵌入内容、表情符号和其他富媒体功能
+- 文件分区、日期范围、消息过滤和其他导出选项
+- 可离线查看的自包含导出文件
 
-## Screenshots
+## 截图
 
-![channel list](.assets/list.png)
-![rendered output](.assets/output.png)
+![频道列表](.assets/list.png)
+![渲染输出](.assets/output.png)
 
-## See also
+## 另请参阅
 
-- [**Chat Analytics**](https://github.com/mlomb/chat-analytics) — solution for analyzing chat patterns of Discord users, using exports produced by **DiscordChatExporter**.
-- [**DiscordChatExporter-frontend**](https://github.com/slatinsky/DiscordChatExporter-frontend) — convenient viewer for exports produced by **DiscordChatExporter**.
+- [**Chat Analytics**](https://github.com/mlomb/chat-analytics) — 用于分析 Discord 用户聊天模式的解决方案，使用 **DiscordChatExporter** 生成的导出文件。
+- [**DiscordChatExporter-frontend**](https://github.com/slatinsky/DiscordChatExporter-frontend) — **DiscordChatExporter** 生成的导出文件的便捷查看器。
