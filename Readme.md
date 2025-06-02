@@ -25,7 +25,12 @@
 
 > 💬 如果您想聊天，**请加入 [Discord 服务器](https://discord.gg/2SUWKFnHSm)**。
 
-## Download
+## 下载
+
+> **注意**:
+> 本 fork 致力于提供 DiscordChatExporter 的核心导出功能。
+> 如果您通过以下链接访问原项目的发布页面，请注意其展示的信息和文档可能包含此 fork 未采纳的额外部分。
+> 请注意，AUR 和 Nix 软件包通常基于原项目构建，其相关页面也可能包含额外的、此 fork 未采纳的内容。
 
 - **图形用户界面** (桌面应用):
   - 🟢 **[Stable release](https://github.com/Tyrrrz/DiscordChatExporter/releases/latest)**: 查找 `DiscordChatExporter.*.zip`
@@ -66,3 +71,9 @@
 
 - [**Chat Analytics**](https://github.com/mlomb/chat-analytics) — 用于分析 Discord 用户聊天模式的解决方案，使用 **DiscordChatExporter** 生成的导出文件。
 - [**DiscordChatExporter-frontend**](https://github.com/slatinsky/DiscordChatExporter-frontend) — **DiscordChatExporter** 生成的导出文件的便捷查看器。
+
+
+## 关于此 Fork (About this Fork)**
+
+此版本是 [Tyrrrz/DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter) 的一个 fork，进行了一些内容调整，以使其更侧重于应用程序的核心功能。
+此 fork 保留了原项目的捐款和社区链接，以支持项目的技术发展。
