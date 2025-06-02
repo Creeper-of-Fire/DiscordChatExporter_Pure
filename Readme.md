@@ -73,7 +73,7 @@
 - [**DiscordChatExporter-frontend**](https://github.com/slatinsky/DiscordChatExporter-frontend) — **DiscordChatExporter** 生成的导出文件的便捷查看器。
 
 
-## 关于此 Fork (About this Fork)**
+## 关于此 Fork (About this Fork)
 
 此版本是 [Tyrrrz/DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter) 的一个 fork，进行了一些内容调整，以使其更侧重于应用程序的核心功能。
 此 fork 保留了原项目的捐款和社区链接，以支持项目的技术发展。
