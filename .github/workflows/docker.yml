@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Docker Buildx
-        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       - name: Build image
         run: >
@@ -36,7 +36,7 @@ jobs:
           --build-arg VERSION=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
           --output type=tar,dest=DiscordChatExporter.Cli.Docker.tar
 
-      - name: Upload artifacts
+      - name: Upload image
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: DiscordChatExporter.Cli.Docker
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Docker Buildx
-        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       - name: Login to DockerHub
         run: >

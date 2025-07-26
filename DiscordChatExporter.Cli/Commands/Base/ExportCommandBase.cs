@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,6 @@ using DiscordChatExporter.Core.Exceptions;
 using DiscordChatExporter.Core.Exporting;
 using DiscordChatExporter.Core.Exporting.Filtering;
 using DiscordChatExporter.Core.Exporting.Partitioning;
-using DiscordChatExporter.Core.Utils.Extensions;
 using Gress;
 using Spectre.Console;
 
@@ -24,8 +24,6 @@ namespace DiscordChatExporter.Cli.Commands.Base;
 
 public abstract class ExportCommandBase : DiscordCommandBase
 {
-    private readonly string _outputPath = Directory.GetCurrentDirectory();
-
     [CommandOption(
         "output",
         'o',
@@ -36,11 +34,11 @@ public abstract class ExportCommandBase : DiscordCommandBase
     )]
     public string OutputPath
     {
-        get => _outputPath;
+        get;
         // Handle ~/ in paths on Unix systems
         // https://github.com/Tyrrrz/DiscordChatExporter/pull/903
-        init => _outputPath = Path.GetFullPath(value);
-    }
+        init => field = Path.GetFullPath(value);
+    } = Directory.GetCurrentDirectory();
 
     [CommandOption("format", 'f', Description = "Export format.")]
     public ExportFormat ExportFormat { get; init; } = ExportFormat.HtmlDark;
@@ -103,8 +101,6 @@ public abstract class ExportCommandBase : DiscordCommandBase
     )]
     public bool ShouldReuseAssets { get; init; } = false;
 
-    private readonly string? _assetsDirPath;
-
     [CommandOption(
         "media-dir",
         Description = "Download assets to this directory. "
@@ -112,10 +108,10 @@ public abstract class ExportCommandBase : DiscordCommandBase
     )]
     public string? AssetsDirPath
     {
-        get => _assetsDirPath;
+        get;
         // Handle ~/ in paths on Unix systems
         // https://github.com/Tyrrrz/DiscordChatExporter/pull/903
-        init => _assetsDirPath = value is not null ? Path.GetFullPath(value) : null;
+        init => field = value is not null ? Path.GetFullPath(value) : null;
     }
 
     [Obsolete("This option doesn't do anything. Kept for backwards compatibility.")]
@@ -144,16 +140,29 @@ public abstract class ExportCommandBase : DiscordCommandBase
     )]
     public bool IsUkraineSupportMessageDisabled { get; init; } = false;
 
-    private ChannelExporter? _channelExporter;
-    protected ChannelExporter Exporter => _channelExporter ??= new ChannelExporter(Discord);
+    [field: AllowNull, MaybeNull]
+    protected ChannelExporter Exporter => field ??= new ChannelExporter(Discord);
 
     protected async ValueTask ExportAsync(IConsole console, IReadOnlyList<Channel> channels)
     {
         var cancellationToken = console.RegisterCancellationHandler();
 
-        var unwrappedChannels = new List<Channel>();
-        unwrappedChannels.AddRange(channels);
-        // Threads
+        // Asset reuse can only be enabled if the download assets option is set
+        // https://github.com/Tyrrrz/DiscordChatExporter/issues/425
+        if (ShouldReuseAssets && !ShouldDownloadAssets)
+        {
+            throw new CommandException("Option --reuse-media cannot be used without --media.");
+        }
+
+        // Assets directory can only be specified if the download assets option is set
+        if (!string.IsNullOrWhiteSpace(AssetsDirPath) && !ShouldDownloadAssets)
+        {
+            throw new CommandException("Option --media-dir cannot be used without --media.");
+        }
+
+        var unwrappedChannels = new List<Channel>(channels);
+
+        // Unwrap threads
         if (ThreadInclusionMode != ThreadInclusionMode.None)
         {
             await console.Output.WriteLineAsync("Fetching threads...");
@@ -167,7 +176,7 @@ public abstract class ExportCommandBase : DiscordCommandBase
                     {
                         await foreach (
                             var thread in Discord.GetChannelThreadsAsync(
-                                unwrappedChannels,
+                                channels,
                                 ThreadInclusionMode == ThreadInclusionMode.All,
                                 Before,
                                 After,
@@ -184,23 +193,11 @@ public abstract class ExportCommandBase : DiscordCommandBase
                     }
                 );
 
-            // Remove unneeded forums, as they cannot be crawled directly.
+            // Remove forums, as they cannot be exported directly and their constituent threads
+            // have already been fetched.
             unwrappedChannels.RemoveAll(channel => channel.Kind == ChannelKind.GuildForum);
 
             await console.Output.WriteLineAsync($"Fetched {fetchedThreadsCount} thread(s).");
-        }
-
-        // Asset reuse can only be enabled if the download assets option is set
-        // https://github.com/Tyrrrz/DiscordChatExporter/issues/425
-        if (ShouldReuseAssets && !ShouldDownloadAssets)
-        {
-            throw new CommandException("Option --reuse-media cannot be used without --media.");
-        }
-
-        // Assets directory can only be specified if the download assets option is set
-        if (!string.IsNullOrWhiteSpace(AssetsDirPath) && !ShouldDownloadAssets)
-        {
-            throw new CommandException("Option --media-dir cannot be used without --media.");
         }
 
         // Make sure the user does not try to export multiple channels into one file.
@@ -351,44 +348,6 @@ public abstract class ExportCommandBase : DiscordCommandBase
         // If only some channels failed to export, it's okay.
         if (errorsByChannel.Count >= unwrappedChannels.Count)
             throw new CommandException("Export failed.");
-    }
-
-    protected async ValueTask ExportAsync(IConsole console, IReadOnlyList<Snowflake> channelIds)
-    {
-        var cancellationToken = console.RegisterCancellationHandler();
-
-        await console.Output.WriteLineAsync("Resolving channel(s)...");
-
-        var channels = new List<Channel>();
-        var channelsByGuild = new Dictionary<Snowflake, IReadOnlyList<Channel>>();
-
-        foreach (var channelId in channelIds)
-        {
-            var channel = await Discord.GetChannelAsync(channelId, cancellationToken);
-
-            // Unwrap categories
-            if (channel.IsCategory)
-            {
-                var guildChannels =
-                    channelsByGuild.GetValueOrDefault(channel.GuildId)
-                    ?? await Discord.GetGuildChannelsAsync(channel.GuildId, cancellationToken);
-
-                foreach (var guildChannel in guildChannels)
-                {
-                    if (guildChannel.Parent?.Id == channel.Id)
-                        channels.Add(guildChannel);
-                }
-
-                // Cache the guild channels to avoid redundant work
-                channelsByGuild[channel.GuildId] = guildChannels;
-            }
-            else
-            {
-                channels.Add(channel);
-            }
-        }
-
-        await ExportAsync(console, channels);
     }
 
     public override async ValueTask ExecuteAsync(IConsole console)
